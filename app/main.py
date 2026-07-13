@@ -86,9 +86,29 @@ async def get_predict_form(request: Request):
         # Load sample input to guide user entries
         sample_input = PredictionInput.model_config["json_schema_extra"]["example"]
         
+        # Load multiple test samples for random cycling
+        test_samples = []
+        test_csv_path = os.path.join("artifacts", "data_ingestion", "test_data.csv")
+        if os.path.exists(test_csv_path):
+            try:
+                test_df = pd.read_csv(test_csv_path)
+                # Sample 15 random rows
+                sampled_df = test_df.sample(min(15, len(test_df)), random_state=42)
+                # Convert to list of dicts without target
+                for _, row in sampled_df.iterrows():
+                    sample_dict = row.to_dict()
+                    target_val = sample_dict.pop("target", None)
+                    test_samples.append({
+                        "features": sample_dict,
+                        "target": int(target_val) if target_val is not None else None
+                    })
+            except Exception as read_err:
+                logger.warning(f"Could not load test samples for page context: {read_err}")
+                
         return templates.TemplateResponse(request, "predict.html", {
             "features": features,
             "sample_input": sample_input,
+            "test_samples": test_samples,
             "form_data": {}
         })
     except Exception as e:

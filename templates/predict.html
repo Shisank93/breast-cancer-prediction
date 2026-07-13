@@ -9,8 +9,14 @@
             <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2 font-heading">Diagnostic Panel</span>
             <h1 class="font-heading fw-bold">Tumor Classification Tool</h1>
             <p class="text-muted">Enter the 30 cellular attributes below. Click 'Analyze' to classify the mass.</p>
-            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill mt-2 px-3" onclick="fillSampleValues()">
-                <i class="bi bi-magic me-1"></i>Fill Sample Demonstration Data
+            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill mt-2 px-3 me-2" onclick="fillSampleValues('malignant')">
+                <i class="bi bi-exclamation-triangle me-1"></i>Fill Malignant Sample
+            </button>
+            <button type="button" class="btn btn-outline-success btn-sm rounded-pill mt-2 px-3 me-2" onclick="fillSampleValues('benign')">
+                <i class="bi bi-check-circle me-1"></i>Fill Benign Sample
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill mt-2 px-3" onclick="fillRandomSample()">
+                <i class="bi bi-shuffle me-1"></i>Fill Random Test Case
             </button>
         </div>
 
@@ -133,16 +139,74 @@
 
 {% block scripts %}
 <script>
-    // JS object containing the backend demonstration values
-    const sampleInput = {{ sample_input | tojson }};
+    // JS objects containing the backend demonstration values
+    const malignantSample = {{ sample_input | tojson }};
+    const benignSample = {
+        "mean_radius": 11.13,
+        "mean_texture": 16.62,
+        "mean_perimeter": 70.47,
+        "mean_area": 381.1,
+        "mean_smoothness": 0.08151,
+        "mean_compactness": 0.03834,
+        "mean_concavity": 0.01369,
+        "mean_concave_points": 0.0137,
+        "mean_symmetry": 0.1511,
+        "mean_fractal_dimension": 0.06148,
+        "radius_error": 0.1415,
+        "texture_error": 0.9671,
+        "perimeter_error": 0.968,
+        "area_error": 9.704,
+        "smoothness_error": 0.005883,
+        "compactness_error": 0.006263,
+        "concavity_error": 0.009398,
+        "concave_points_error": 0.006189,
+        "symmetry_error": 0.02009,
+        "fractal_dimension_error": 0.002377,
+        "worst_radius": 11.68,
+        "worst_texture": 20.29,
+        "worst_perimeter": 74.35,
+        "worst_area": 421.1,
+        "worst_smoothness": 0.103,
+        "worst_compactness": 0.06219,
+        "worst_concavity": 0.0458,
+        "worst_concave_points": 0.04044,
+        "worst_symmetry": 0.2383,
+        "worst_fractal_dimension": 0.07083
+    };
     
-    function fillSampleValues() {
-        for (const [key, value] of Object.entries(sampleInput)) {
+    function fillSampleValues(type) {
+        const sample = type === 'benign' ? benignSample : malignantSample;
+        for (const [key, value] of Object.entries(sample)) {
             const inputField = document.getElementById('input_' + key);
             if (inputField) {
                 inputField.value = value;
             }
         }
+    }
+
+    const testSamples = {{ test_samples | tojson if test_samples else '[]' }};
+    let lastRandomIndex = -1;
+
+    function fillRandomSample() {
+        if (!testSamples || testSamples.length === 0) {
+            alert("No test samples available.");
+            return;
+        }
+        
+        let randomIndex = Math.floor(Math.random() * testSamples.length);
+        if (testSamples.length > 1 && randomIndex === lastRandomIndex) {
+            randomIndex = (randomIndex + 1) % testSamples.length;
+        }
+        lastRandomIndex = randomIndex;
+        
+        const selected = testSamples[randomIndex];
+        for (const [key, value] of Object.entries(selected.features)) {
+            const inputField = document.getElementById('input_' + key);
+            if (inputField) {
+                inputField.value = value;
+            }
+        }
+        console.log(`Loaded test sample index ${randomIndex} (Ground truth is: ${selected.target === 1 ? 'Benign' : 'Malignant'})`);
     }
 </script>
 {% endblock %}
