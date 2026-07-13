@@ -1,0 +1,32 @@
+artifacts_dir: artifacts
+
+data_ingestion:
+  data_ingestion_dir: data_ingestion
+  raw_data_file: raw.csv
+  train_data_file: train_data.csv
+  test_data_file: test_data.csv
+  test_size: 0.2
+
+data_validation:
+  data_validation_dir: data_validation
+  status_file: validation_status.txt
+  report_file: validation_report.json
+
+data_transformation:
+  data_transformation_dir: data_transformation
+  transformed_train_file: train.npy
+  transformed_test_file: test.npy
+  scaler_file: scaler.pkl
+
+model_trainer:
+  model_trainer_dir: model_trainer
+  model_file: model.pkl
+  # Hyperparameters for Logistic Regression
+  c_param: 1.0
+  max_iter: 1000
+  solver: lbfgs
+  penalty: l2
+
+model_evaluation:
+  model_evaluation_dir: model_evaluation
+  report_file: evaluation_report.json

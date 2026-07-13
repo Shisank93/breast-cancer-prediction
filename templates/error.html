@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Error - OncoPredict AI{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+    <div class="container py-5 text-center animate-fade-in" style="max-width: 600px;">
+        <div class="card custom-card p-5 border-danger border-opacity-20 shadow-sm">
+            <div class="text-danger mb-4">
+                <i class="bi bi-exclamation-octagon-fill" style="font-size: 4rem;"></i>
+            </div>
+            <h2 class="font-heading fw-bold text-danger mb-3">System Exception Occurred</h2>
+            <h4 class="text-secondary font-heading mb-4">Status Code: {{ error_code if error_code is defined else 500 }}</h4>
+            <div class="p-3 bg-light rounded-3 text-start mb-4 border text-monospace small">
+                <p class="mb-0 text-secondary leading-relaxed">{{ error_msg }}</p>
+            </div>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/" class="btn btn-outline-secondary px-4 rounded-3 border-2">Return Home</a>
+                <a href="/predict" class="btn btn-primary-custom">Try Again</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

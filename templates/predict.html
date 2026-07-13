@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Analyze Tumor Attributes - OncoPredict AI{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+    <div class="container py-4 animate-fade-in" style="max-width: 900px;">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2 font-heading">Diagnostic Panel</span>
+            <h1 class="font-heading fw-bold">Tumor Classification Tool</h1>
+            <p class="text-muted">Enter the 30 cellular attributes below. Click 'Analyze' to classify the mass.</p>
+            <button type="button" class="btn btn-outline-primary btn-sm rounded-pill mt-2 px-3" onclick="fillSampleValues()">
+                <i class="bi bi-magic me-1"></i>Fill Sample Demonstration Data
+            </button>
+        </div>
+
+        {% if errors %}
+        <div class="alert alert-danger alert-clinical malignant mb-4 animate-fade-in">
+            <h5 class="font-heading fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Parameter Validation Errors</h5>
+            <p class="small text-secondary">The values entered did not satisfy mathematical or clinical constraints. Please review the highlighted parameters:</p>
+            <ul class="small mb-0">
+                {% for err in errors %}
+                <li><strong>{{ err.loc | join('.') | replace('_', ' ') | title }}</strong>: {{ err.msg }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <form action="/predict" method="post" onsubmit="showLoading()">
+            <!-- Tab Navigation pills -->
+            <div class="text-center">
+                <div class="nav nav-pills nav-pills-custom" id="v-pills-tab" role="tablist">
+                    <button class="nav-link active" id="tab-size-nav" data-bs-toggle="pill" data-bs-target="#tab-size" type="button" role="tab" aria-controls="tab-size" aria-selected="true">1. Core Size (9)</button>
+                    <button class="nav-link" id="tab-shape-nav" data-bs-toggle="pill" data-bs-target="#tab-shape" type="button" role="tab" aria-controls="tab-shape" aria-selected="false">2. Shape & Surface (12)</button>
+                    <button class="nav-link" id="tab-cavity-nav" data-bs-toggle="pill" data-bs-target="#tab-cavity" type="button" role="tab" aria-controls="tab-cavity" aria-selected="false">3. Cavity & Detail (9)</button>
+                </div>
+            </div>
+
+            <!-- Tab Content panel lists -->
+            <div class="tab-content mt-4" id="v-pills-tabContent">
+                <!-- Tab 1: Core Size -->
+                <div class="tab-pane fade show active" id="tab-size" role="tabpanel" aria-labelledby="tab-size-nav">
+                    <h5 class="form-group-title">Nuclear Size Measurements</h5>
+                    <div class="row g-3">
+                        {% set size_features = [
+                            ('mean_radius', 'Mean Radius', 'Average distance from center to points on perimeter'),
+                            ('radius_error', 'Radius SE', 'Standard error of the radius'),
+                            ('worst_radius', 'Worst Radius', 'Largest mean value of the radius'),
+                            ('mean_perimeter', 'Mean Perimeter', 'Average size of core perimeter'),
+                            ('perimeter_error', 'Perimeter SE', 'Standard error of the perimeter'),
+                            ('worst_perimeter', 'Worst Perimeter', 'Largest mean value of the perimeter'),
+                            ('mean_area', 'Mean Area', 'Average size of core area'),
+                            ('area_error', 'Area SE', 'Standard error of the area'),
+                            ('worst_area', 'Worst Area', 'Largest mean value of the area')
+                        ] %}
+                        {% for fid, name, desc in size_features %}
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">{{ name }}</label>
+                            <input type="number" step="any" name="{{ fid }}" id="input_{{ fid }}" class="form-control form-control-custom" 
+                                   value="{{ form_data[fid] if form_data[fid] is defined else '' }}" required>
+                            <span class="input-desc-tooltip">{{ desc }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Tab 2: Shape & Surface -->
+                <div class="tab-pane fade" id="tab-shape" role="tabpanel" aria-labelledby="tab-shape-nav">
+                    <h5 class="form-group-title">Shape & Surface Smoothness</h5>
+                    <div class="row g-3">
+                        {% set shape_features = [
+                            ('mean_texture', 'Mean Texture', 'Standard deviation of gray-scale values'),
+                            ('texture_error', 'Texture SE', 'Standard error of the texture'),
+                            ('worst_texture', 'Worst Texture', 'Largest mean value of the texture'),
+                            ('mean_smoothness', 'Mean Smoothness', 'Local variation in radius lengths'),
+                            ('smoothness_error', 'Smoothness SE', 'Standard error of the smoothness'),
+                            ('worst_smoothness', 'Worst Smoothness', 'Largest mean value of smoothness'),
+                            ('mean_compactness', 'Mean Compactness', 'Perimeter^2 / Area - 1.0'),
+                            ('compactness_error', 'Compactness SE', 'Standard error of the compactness'),
+                            ('worst_compactness', 'Worst Compactness', 'Largest mean value of compactness'),
+                            ('mean_symmetry', 'Mean Symmetry', 'Symmetry value of nuclear profile'),
+                            ('symmetry_error', 'Symmetry SE', 'Standard error of the symmetry'),
+                            ('worst_symmetry', 'Worst Symmetry', 'Largest mean value of symmetry')
+                        ] %}
+                        {% for fid, name, desc in shape_features %}
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">{{ name }}</label>
+                            <input type="number" step="any" name="{{ fid }}" id="input_{{ fid }}" class="form-control form-control-custom" 
+                                   value="{{ form_data[fid] if form_data[fid] is defined else '' }}" required>
+                            <span class="input-desc-tooltip">{{ desc }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Tab 3: Cavity & Detail -->
+                <div class="tab-pane fade" id="tab-cavity" role="tabpanel" aria-labelledby="tab-cavity-nav">
+                    <h5 class="form-group-title">Nuclear Cavities & Fineness</h5>
+                    <div class="row g-3">
+                        {% set cavity_features = [
+                            ('mean_concavity', 'Mean Concavity', 'Severity of concave contour portions'),
+                            ('concavity_error', 'Concavity SE', 'Standard error of the concavity'),
+                            ('worst_concavity', 'Worst Concavity', 'Largest mean value of concavity'),
+                            ('mean_concave_points', 'Mean Concave Points', 'Number of concave contour portions'),
+                            ('concave_points_error', 'Concave Points SE', 'Standard error of concave points'),
+                            ('worst_concave_points', 'Worst Concave Points', 'Largest mean value of concave points'),
+                            ('mean_fractal_dimension', 'Mean Fractal Dim', 'Coastline approximation - 1'),
+                            ('fractal_dimension_error', 'Fractal Dim SE', 'Standard error of fractal dimension'),
+                            ('worst_fractal_dimension', 'Worst Fractal Dim', 'Largest mean value of fractal dimension')
+                        ] %}
+                        {% for fid, name, desc in cavity_features %}
+                        <div class="col-md-4">
+                            <label class="form-label small fw-bold">{{ name }}</label>
+                            <input type="number" step="any" name="{{ fid }}" id="input_{{ fid }}" class="form-control form-control-custom" 
+                                   value="{{ form_data[fid] if form_data[fid] is defined else '' }}" required>
+                            <span class="input-desc-tooltip">{{ desc }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit action controls -->
+            <div class="text-center mt-5 pt-4 border-top border-light">
+                <button type="submit" class="btn btn-primary-custom btn-lg px-5">
+                    <i class="bi bi-shield-check me-2"></i>Analyze Tumor Profile
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // JS object containing the backend demonstration values
+    const sampleInput = {{ sample_input | tojson }};
+    
+    function fillSampleValues() {
+        for (const [key, value] of Object.entries(sampleInput)) {
+            const inputField = document.getElementById('input_' + key);
+            if (inputField) {
+                inputField.value = value;
+            }
+        }
+    }
+</script>
+{% endblock %}

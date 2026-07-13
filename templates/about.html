@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}About Breast Cancer & Diagnostic Data - OncoPredict AI{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+    <div class="container py-4 animate-fade-in">
+        <div class="row align-items-center mb-5">
+            <div class="col-lg-6">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2 font-heading">FNA Biopsy</span>
+                <h1 class="font-heading fw-bold mb-3">About Breast Cancer FNA Diagnostics</h1>
+                <p class="text-muted leading-relaxed">
+                    Breast cancer remains one of the most common cancers diagnosed in women globally. Detection at an early localized stage increases the likelihood of successful treatment.
+                </p>
+                <p class="text-muted leading-relaxed">
+                    A Fine Needle Aspirate (FNA) is a biopsy procedure where a thin needle is inserted into a breast mass to extract fluid and cells. The cells are then scanned under a microscope, allowing pathologists to measure nuclear dimensions and identify malignant signs.
+                </p>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="p-4 bg-light rounded-4 border border-secondary shadow-sm">
+                    <h5 class="fw-bold font-heading mb-3 text-start"><i class="bi bi-info-circle-fill text-primary me-2"></i>Wisconsin Dataset Info</h5>
+                    <div class="table-responsive text-start">
+                        <table class="table table-borderless table-sm small mb-0">
+                            <tbody>
+                                <tr><td><strong>Creator</strong>:</td><td class="text-secondary">Dr. William H. Wolberg (University of Wisconsin)</td></tr>
+                                <tr><td><strong>Samples</strong>:</td><td class="text-secondary">569 cases (357 Benign, 212 Malignant)</td></tr>
+                                <tr><td><strong>Features</strong>:</td><td class="text-secondary">30 real-valued inputs (extracted from FNA image analysis)</td></tr>
+                                <tr><td><strong>Target</strong>:</td><td class="text-secondary">0 = Malignant, 1 = Benign</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4 mt-4">
+            <h3 class="font-heading fw-bold text-center mb-4">Core Feature Sets Explained</h3>
+            <div class="col-md-4">
+                <div class="card custom-card p-4">
+                    <div class="card-icon-container">
+                        <i class="bi bi-arrows-fullscreen"></i>
+                    </div>
+                    <h5 class="fw-bold font-heading mb-3 text-primary">1. Nuclear Size</h5>
+                    <p class="text-secondary small mb-0">
+                        <strong>Radius, Perimeter, Area</strong>: These represent the physical scale of the nuclei. Malignant cells typically show significant swelling, producing larger radiuses and surface areas.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card p-4">
+                    <div class="card-icon-container" style="background: var(--teal-light); color: var(--teal);">
+                        <i class="bi bi-bounding-box-circles"></i>
+                    </div>
+                    <h5 class="fw-bold font-heading mb-3 text-teal">2. Nuclear Shape</h5>
+                    <p class="text-secondary small mb-0">
+                        <strong>Smoothness, Compactness, Concavity</strong>: These measure shape distortions. Benign nuclei are mostly round and smooth, while malignant nuclei exhibit irregularities, contour indentations, and surface roughness.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card p-4">
+                    <div class="card-icon-container" style="background: var(--crimson-light); color: var(--crimson);">
+                        <i class="bi bi-activity"></i>
+                    </div>
+                    <h5 class="fw-bold font-heading mb-3 text-danger">3. Texture & Variance</h5>
+                    <p class="text-secondary small mb-0">
+                        <strong>Texture & Symmetry</strong>: These represent differences in internal chromatin distribution and alignment symmetry. Increased texture variance and asymmetry often correlate with cancerous growth.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

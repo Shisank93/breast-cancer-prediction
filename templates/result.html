@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Result - OncoPredict AI{% endblock %}
+
+{% block content %}
+<section class="py-5 bg-white">
+    <div class="container py-4 animate-fade-in" style="max-width: 800px;">
+        <div class="card custom-card p-5 shadow-sm text-center">
+            
+            <div class="mb-4">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill font-heading">Diagnostic Assessment</span>
+            </div>
+            
+            <!-- Dynamic SVG circular progress gauge -->
+            <div class="gauge-wrapper mb-4">
+                <svg class="gauge-svg" viewBox="0 0 200 200">
+                    <circle class="gauge-bg" cx="100" cy="100" r="80"></circle>
+                    <circle class="{% if class == 1 %}gauge-fill-benign{% else %}gauge-fill-malignant{% endif %}" 
+                            id="gaugeFill" cx="100" cy="100" r="80" transform="rotate(-90 100 100)"></circle>
+                </svg>
+                <div class="gauge-label">
+                    <span class="gauge-val text-{% if class == 1 %}success{% else %}danger{% endif %}">{{ confidence }}</span>
+                    <span class="gauge-title d-block">Confidence</span>
+                </div>
+            </div>
+
+            <h2 class="font-heading fw-bold mb-2">
+                Classification: 
+                <span class="text-{% if class == 1 %}success{% else %}danger{% endif %}">
+                    {{ prediction }}
+                </span>
+            </h2>
+            
+            <p class="text-muted mb-4">
+                Inference completed on clinical attributes with a model probability threshold of <strong>{{ probability }}</strong>.
+            </p>
+
+            <!-- Result disclaimer card -->
+            <div class="alert-clinical {% if class == 1 %}benign{% else %}malignant{% endif %} text-start mb-4">
+                <h5 class="fw-bold font-heading text-{% if class == 1 %}success{% else %}danger{% endif %} mb-2">
+                    {% if class == 1 %}
+                    <i class="bi bi-shield-check-fill me-2"></i>Indications of Benign Mass
+                    {% else %}
+                    <i class="bi bi-shield-slash-fill me-2"></i>Indications of Malignant Mass
+                    {% endif %}
+                </h5>
+                <p class="small text-secondary mb-0">
+                    {% if class == 1 %}
+                    The AI model predicts the tumor tissue is highly likely benign (non-cancerous). Cell nucleus size, contour, and shape regularities align with normal growth profiles.
+                    {% else %}
+                    The AI model detects measurements characteristically similar to malignant (cancerous) tissue profiles. Swelling radii, high texture variations, and severe contour folds indicate possible cellular mutation.
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Metadata info table -->
+            <div class="table-responsive text-start mb-4">
+                <table class="table table-bordered table-sm small mb-0 table-custom">
+                    <tbody>
+                        <tr>
+                            <td class="p-2"><strong>Prediction Output ID</strong></td>
+                            <td class="p-2 text-secondary">ONCO-{{ timestamp | replace(" ", "-") | replace(":", "") }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2"><strong>Inference Timestamp</strong></td>
+                            <td class="p-2 text-secondary">{{ timestamp }}</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2"><strong>Security Protocol</strong></td>
+                            <td class="p-2 text-secondary">Logged (SQLite Audit History Trail)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Medical Disclaimer alert -->
+            <div class="p-3 bg-light border rounded-3 mb-5 text-start">
+                <small class="text-muted d-block leading-relaxed">
+                    <strong class="text-secondary"><i class="bi bi-info-circle me-1"></i>Clinical Notice:</strong> 
+                    This prediction is generated algorithmically based on numerical cellular observations. Machine learning tools are meant to augment medical expertise, not replace it. The results must be reviewed by a board-certified physician before clinical actions.
+                </small>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                <a href="/predict" class="btn btn-primary-custom">
+                    <i class="bi bi-arrow-left me-2"></i>Analyze Another Tumor
+                </a>
+                <a href="/metrics" class="btn btn-outline-secondary px-4 rounded-3 border-2">
+                    Review History Log
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const probability = parseFloat("{{ probability }}");
+        const circle = document.getElementById("gaugeFill");
+        const radius = 80;
+        const circumference = 2 * Math.PI * radius; // ~502.65
+        
+        circle.style.strokeDasharray = circumference;
+        circle.style.strokeDashoffset = circumference;
+        
+        // Animate stroke Dashoffset based on confidence probability
+        setTimeout(() => {
+            const offset = circumference * (1 - probability);
+            circle.style.strokeDashoffset = offset;
+        }, 120);
+    });
+</script>
+{% endblock %}

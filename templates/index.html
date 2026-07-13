@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}OncoPredict AI - Early Breast Cancer Classification & Machine Learning Analysis{% endblock %}
+
+{% block content %}
+<!-- 1. Hero Section -->
+<section class="hero-gradient">
+    <div class="container text-center text-lg-start">
+        <div class="row align-items-center">
+            <div class="col-lg-7 animate-fade-in">
+                <span class="hero-subtitle mb-2 d-inline-block">Clinical Decision Support</span>
+                <h1 class="hero-title">Precision Breast Cancer Classification</h1>
+                <p class="hero-desc">
+                    An advanced Machine Learning system capable of predicting whether a breast tumor is Benign or Malignant using the Wisconsin Diagnostic dataset.
+                </p>
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
+                    <a href="/predict" class="btn btn-primary-custom btn-lg">
+                        <i class="bi bi-activity me-2"></i>Analyze Tumor Attributes
+                    </a>
+                    <a href="#performance" class="btn btn-outline-light btn-lg px-4 border-2 rounded-3">
+                        View Model Performance
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 mt-5 mt-lg-0 text-center animate-fade-in d-none d-lg-block">
+                <div class="p-4 rounded-4 shadow-lg border border-secondary" style="background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(8px);">
+                    <h5 class="text-white mb-3 font-heading"><i class="bi bi-bar-chart-line me-2"></i>Key Evaluation Results</h5>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-center">
+                                <small class="text-light d-block text-uppercase" style="font-size: 0.75rem;">Accuracy</small>
+                                <span class="fw-bold text-teal font-heading h3">98.25%</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-center">
+                                <small class="text-light d-block text-uppercase" style="font-size: 0.75rem;">ROC-AUC</small>
+                                <span class="fw-bold text-info font-heading h3">99.54%</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-center">
+                                <small class="text-light d-block text-uppercase" style="font-size: 0.75rem;">Recall</small>
+                                <span class="fw-bold text-warning font-heading h3">98.61%</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 rounded-3 bg-white bg-opacity-10 text-center">
+                                <small class="text-light d-block text-uppercase" style="font-size: 0.75rem;">F1-Score</small>
+                                <span class="fw-bold text-danger font-heading h3">98.61%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 2. About Breast Cancer Section -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="text-center mb-5 max-width-600 mx-auto">
+            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2 font-heading">Dataset Insights</span>
+            <h2 class="font-heading fw-bold">Understanding Tumor Attributes</h2>
+            <p class="text-muted">The Wisconsin Diagnostic Dataset contains detailed cellular measurements extracted from fine needle aspirate (FNA) images of breast masses.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card custom-card p-4">
+                    <div class="card-icon-container">
+                        <i class="bi bi-aspect-ratio"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Core Geometry</h5>
+                    <p class="text-secondary small mb-0">Measurements like mean radius, perimeter, and area describe the fundamental dimensions of the cell nuclei, mapping growth density.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card p-4">
+                    <div class="card-icon-container">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Shape & Irregularity</h5>
+                    <p class="text-secondary small mb-0">Smoothness, compactness, concavity, and symmetry measure deviations from circular uniformity and detect structural mutations.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card p-4">
+                    <div class="card-icon-container">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Worst-Case Values</h5>
+                    <p class="text-secondary small mb-0">The dataset tracks 'worst' dimensions (the mean of the 3 largest cells per mass) which are critical biomarkers for identifying malignancy.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Why Early Detection Matters -->
+<section class="py-5 bg-light border-top border-bottom border-light">
+    <div class="container py-4">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill mb-2 font-heading">Survival Impact</span>
+                <h2 class="font-heading fw-bold mb-4">Why Early Detection Matters</h2>
+                <div class="d-flex align-items-start mb-4">
+                    <div class="me-3 p-2 bg-white rounded-3 border border-secondary shadow-sm text-primary">
+                        <i class="bi bi-heart-pulse-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-1">99% Survival Rate</h5>
+                        <p class="text-secondary small mb-0">When localized breast cancer is detected early, the 5-year relative survival rate is virtually 99%. Regular monitoring and screening save lives.</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-4">
+                    <div class="me-3 p-2 bg-white rounded-3 border border-secondary shadow-sm text-primary">
+                        <i class="bi bi-clipboard2-pulse-fill fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-1">Reduced Invasiveness</h5>
+                        <p class="text-secondary small mb-0">Early diagnosis enables conservative treatment plans, decreasing dependency on aggressive chemotherapy and invasive surgeries.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="p-5 rounded-4 shadow-sm bg-white border border-secondary text-center">
+                    <div class="perf-badge px-4 py-3 rounded-pill d-inline-block mb-3">99%</div>
+                    <h4 class="fw-bold">Relative Survival Rate</h4>
+                    <p class="text-muted small">For localized breast tumor stages detected at initial onset before metastasis.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. About the AI Model -->
+<section class="py-5 bg-white">
+    <div class="container py-4">
+        <div class="row align-items-center">
+            <div class="col-lg-6 order-lg-2">
+                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-2 font-heading">ML Architecture</span>
+                <h2 class="font-heading fw-bold mb-4">Logistic Regression Classifier</h2>
+                <p class="text-muted">
+                    We employ a Logistic Regression estimator optimized with L2 regularization. It outputs prediction probabilities, providing a solid confidence mapping for clinicians.
+                </p>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i><strong>Feature Scaling</strong>: Inputs are scaled using `StandardScaler` to handle multi-unit variations.</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i><strong>L2 Regularization</strong>: Minimizes overfitting and helps generalization across multi-collinear attributes.</li>
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i><strong>Fast Inference</strong>: Lightweight footprint ideal for rapid clinical support integration.</li>
+                </ul>
+            </div>
+            <div class="col-lg-6 order-lg-1 text-center">
+                <div class="p-4 rounded-4 shadow-sm bg-light border border-secondary">
+                    <h5 class="font-heading fw-bold text-start mb-3"><i class="bi bi-gear-fill text-primary me-2"></i>Pipeline Pipeline Flow</h5>
+                    <div class="text-start">
+                        <div class="p-3 mb-2 rounded-3 bg-white border border-light small">
+                            <span class="badge bg-primary me-2">Step 1</span> <strong>Data Ingestion & Splits</strong> (load sklearn FNA mass)
+                        </div>
+                        <div class="p-3 mb-2 rounded-3 bg-white border border-light small">
+                            <span class="badge bg-primary me-2">Step 2</span> <strong>Schema Validation</strong> (strict type checking & size bounds)
+                        </div>
+                        <div class="p-3 mb-2 rounded-3 bg-white border border-light small">
+                            <span class="badge bg-primary me-2">Step 3</span> <strong>Transformation & Scaling</strong> (StandardScaler fitting)
+                        </div>
+                        <div class="p-3 rounded-3 bg-white border border-light small">
+                            <span class="badge bg-primary me-2">Step 4</span> <strong>Estimation & Acceptance</strong> (L2 regularized train logit)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Model Performance -->
+<section id="performance" class="py-5 bg-light border-top border-bottom border-light">
+    <div class="container py-4">
+        <div class="text-center mb-5 max-width-600 mx-auto">
+            <span class="badge bg-teal bg-opacity-10 text-teal px-3 py-2 rounded-pill mb-2 font-heading">Performance Metrics</span>
+            <h2 class="font-heading fw-bold">Validated Clinical Performance</h2>
+            <p class="text-muted">Below are the real-time plots generated by our automated evaluation pipeline on the test split.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-6">
+                <div class="card custom-card p-4 text-center">
+                    <h5 class="fw-bold mb-3 font-heading text-start">Confusion Matrix</h5>
+                    <img src="/reports/figures/confusion_matrix.png" alt="Confusion Matrix" class="img-fluid rounded border border-light">
+                    <p class="text-muted small mt-2">Confusion matrix detailing classification splits on 114 test samples.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card custom-card p-4 text-center">
+                    <h5 class="fw-bold mb-3 font-heading text-start">ROC Curve</h5>
+                    <img src="/reports/figures/roc_curve.png" alt="ROC Curve" class="img-fluid rounded border border-light">
+                    <p class="text-muted small mt-2">Receiver Operating Characteristic demonstrating AUC = 0.9954.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Prediction CTA -->
+<section class="py-5 bg-white text-center">
+    <div class="container py-4">
+        <div class="p-5 rounded-4 shadow bg-dark text-white border border-secondary position-relative overflow-hidden">
+            <div class="position-relative z-index-10">
+                <h2 class="font-heading fw-bold text-white mb-3">Ready to Analyze FNA Measurements?</h2>
+                <p class="text-light opacity-75 mb-4 mx-auto" style="max-width: 600px;">
+                    Fill out the tumor diagnostics form containing 30 variables. Get immediate predictions, confidence indicators, and probability logs.
+                </p>
+                <a href="/predict" class="btn btn-primary-custom btn-lg px-5">
+                    Launch Diagnostic Assistant
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
